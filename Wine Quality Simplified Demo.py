@@ -27,6 +27,7 @@
 
 import pandas as pd
 import numpy as np
+import streamlit as st
 
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
@@ -38,12 +39,19 @@ import dtreeviz
 import seaborn as sns
 
 
+#
+st.header("Wine AI Experiments")
+st.subheader('_Interactive _:blue[Inteface] for Wine Tasting emojis :sunglasses:')
+
 # ### Prepare Dataset
 
 # In[3]:
 
 
-WINE_SCORE_LIMIT = 6
+WINE_SCORE_LIMIT = st.slider('How old are you?', 0, 130, 25)
+st.write("Selected Wine Score Limit: ", WINE_SCORE_LIMIT)
+##WINE_SCORE_LIMIT = 6
+
 wine=pd.read_csv('winequality-red.csv', sep=';')
 wine['quality'] = np.where(wine['quality']>=WINE_SCORE_LIMIT , 1,0) # 1 stands for decent wine,0 - cooking wine
 
