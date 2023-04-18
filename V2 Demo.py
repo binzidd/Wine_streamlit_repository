@@ -38,8 +38,11 @@ from matplotlib import pyplot as plt
 import dtreeviz
 import seaborn as sns
 
+from dtreeviz.trees import dtreeviz
+
 import streamlit as st
 from io import StringIO
+import streamlit.components.v1 as components
 
 
 #Page Config 
@@ -73,7 +76,6 @@ def load_data():
     wine=pd.read_csv(uploaded_file, sep=';')
     wine['quality'] = np.where(wine['quality']>=WINE_SCORE_LIMIT , 1,0) # 1 stands for decent wine,0 - cooking wine
     return wine 
-
 
 
 
@@ -142,19 +144,19 @@ def decisiontreeclassifier():
     winemodel = DecisionTreeClassifier(random_state=rand_seed, max_depth=5)
     winemodel.fit(train_x, train_y)
     val_predictions1=winemodel.predict(val_x)
-    model1_acc=round(accuracy_score(val_y, val_predictions1)*100,2)
-    model1_f1=round(f1_score(val_y, val_predictions1)*100,2)
-    return model1_acc
+    model_acc=round(accuracy_score(val_y, val_predictions1)*100,2)
+    model_f1=round(f1_score(val_y, val_predictions1)*100,2)
+    return model_acc, train_x,train_y,winemodel
 
 with tab1:
-    st.header("Model 1 (DecisionTreeClassifier)")
     
+    st.header("Model 1 (DecisionTreeClassifier)")
     st.subheader("Step 1: Choose a Random Seed")
+    
     rand_seed = st.slider("Choose Random Seed for Model",0, 1000,123)    
-    wine=wine
-
     st.subheader('Step 1: Choose Features for Model')
     cols=list(wine.columns)
+    
     features = st.multiselect(
         'Select the Columns You Want to select',
         list(wine.columns),
@@ -162,49 +164,56 @@ with tab1:
    
     x=wine.filter(features,axis=1)
    
-    x=wine[features]
     y=wine['Quality']
-
-    model1_acc=decisiontreeclassifier()
+    model1_acc, train_x1,train_y1,winemodel1=decisiontreeclassifier()
     
-
     st.write(model1_acc)
+
+    viz = dtreeviz.model(winemodel1,
+            train_x1,
+            train_y1,
+            feature_names = train_x1.columns,
+            target_name = 'Wine categories',
+            class_names = ['Goon de Dorm', 'FS Cuvee'])
+    
+    f=viz.view()
+    def st_dtree(plot, height=None):
+        dtree_html = f"<body>{viz.svg()}</body>"
+        components.html(dtree_html, height=height)
+    st.set_option('deprecation.showPyplotGlobalUse', False)
+    st_dtree(dtreeviz.model(winemodel1,
+            train_x1,
+            train_y1,
+            feature_names = train_x1.columns,
+            target_name = 'Wine categories',
+            class_names = ['Goon de Dorm', 'FS Cuvee']))
+
+
 
    
 
    ## Split data
-    
-st.stop()
 
 
 
 with tab2:
    st.header("Model 2")
+   
+   rand_seed = st.slider("Choose Random Seed for Model",0, 1000,123,key='Tab2')  
+   st.subheader('Step 1: Choose Features for Model')
+
+   cols=list(wine.columns)
+   features = st.multiselect(
+        'Select the Columns You Want to select',
+        list(wine.columns),
+        ['Sweetness','Preservatives','Alcohol%'])
+   x=wine.filter(features,axis=1)
    y=wine['Quality']
-   features=[
-     # 'Sourness',
-     # 'Fruitiness',
-     'Sweetness',
-    # 'Saltiness',
-     'Preservatives',
-     'Alcohol%'
-]
-x=wine[features]
+   model2_acc=decisiontreeclassifier()
 
-## Split data
-train_x, val_x, train_y, val_y = train_test_split(x, y, random_state = rand_seed)
+st.write('Model 2 Accuracy=',str(model2_acc),'%')
 
-## Train and fit model
-winemodel2 = DecisionTreeClassifier(random_state=rand_seed, max_depth=5)
-winemodel2.fit(train_x, train_y)
-val_predictions2=winemodel2.predict(val_x)
-
-model2_acc=round(accuracy_score(val_y, val_predictions2)*100,2)
-model2_f1=round(f1_score(val_y, val_predictions2)*100,2)
-
-st.write('Model 1 Accuracy=',model1_acc,'%')
-print('Model 2 Accuracy=',model2_acc,'%')
-
+st.stop()
 
 with tab3:
    st.header("An owl")
