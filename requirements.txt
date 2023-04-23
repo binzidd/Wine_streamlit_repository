@@ -6,3 +6,4 @@ sklearn
 graphviz
 seaborn
 matplotlib
+svgelements
