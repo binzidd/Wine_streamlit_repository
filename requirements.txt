@@ -2,7 +2,7 @@ pandas
 numpy
 streamlit
 dtreeviz
-sklearn
+scikit-learn
 graphviz
 seaborn
 matplotlib
