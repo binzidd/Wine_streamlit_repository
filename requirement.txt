@@ -11,3 +11,4 @@ base64
 matplotlib
 matplotlib
 io
+scikit-learn
