@@ -1,29 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Wine Tasting with ML
-# <img style="float:left; max-height:250px" src="Wine.png">
-
-# ### Import Packages
-
-# In[6]:
-
-
-######## Install packages
-#!pip install dtreeviz
-
-######## Other libraries
-# from sklearn.tree import DecisionTreeRegressor
-# from sklearn.ensemble import RandomForestRegressor
-
-# from sklearn.metrics import mean_absolute_error, log_loss, f1_score, roc_auc_score, RocCurveDisplay, confusion_matrix, ConfusionMatrixDisplay
-# from sklearn import tree
-# from string import ascii_letters
-#import graphviz
-
-
-# In[1]:
-
 
 import pandas as pd
 import numpy as np
@@ -63,12 +37,6 @@ st.subheader('AI Experiment to determine Wine Quality')
 
 # In[2]:
 
-#Creating a sidebar to capture Wine Score Limit 
-with st.sidebar:
-    st.subheader("Filter")
-    WINE_SCORE_LIMIT = st.slider(
-        "Choose a Wine Score Limit",
-        0, 10,6)
 
 
 def load_data(WINE_SCORE_LIMIT):
@@ -92,13 +60,23 @@ with st.container():
     
     uploaded_file=st.file_uploader("Chose a file")
     
+    if uploaded_file != None:
+    #Creating a sidebar to capture Wine Score Limit 
+        
+            st.sidebar.subheader("Filter")
+            WINE_SCORE_LIMIT = st.sidebar.slider(
+            "Choose a Wine Score Limit",
+            0, 10,6)
+            wine = load_data(WINE_SCORE_LIMIT)
+            data_load_state.text("'Data Loaded and Cached'")
+            st.write(wine)
+    else: 
+         st.error("Cannot Continue Further, Please load a CSV File", icon="🚨")
+         st.stop()
 
-    wine = load_data(WINE_SCORE_LIMIT)
-    data_load_state.text("'Data Loaded and Cached'")
-    
     #submitted = st.form_submit_button("Explore Data")
 
-    st.write(wine)
+    
     st.subheader('Step 2: Drop Non Relevant Columns')
     cols=list(wine.columns)
        
