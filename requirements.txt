@@ -6,4 +6,3 @@ sklearn
 graphviz
 seaborn
 matplotlib
-scikit-learn
