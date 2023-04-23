@@ -37,12 +37,12 @@ from sklearn.metrics import accuracy_score, f1_score, RocCurveDisplay, confusion
 from matplotlib import pyplot as plt
 import dtreeviz
 import seaborn as sns
-
-from dtreeviz.trees import dtreeviz
+import base64
 
 import streamlit as st
 from io import StringIO
 import streamlit.components.v1 as components
+from svgelements import *
 
 
 #Page Config 
