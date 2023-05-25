@@ -122,8 +122,8 @@ def decisiontreeclassifier(x,y,rand_seed,v_depth):
     winemodel.fit(train_x, train_y)
     val_predictions1=winemodel.predict(val_x)
     model_acc=round(accuracy_score(val_y, val_predictions1)*100,2)
-    model_f1=round(f1_score(val_y, val_predictions1)*100,2)
-    return model_acc, train_x,train_y,winemodel
+    model_acc=round(f1_score(val_y, val_predictions1)*100,2)
+    return train_x,train_y, model_acc, model_acc
 
 def randomforestclassifier(x,y,rand_seed,v_n_estimators):
      train_x, val_x, train_y, val_y = train_test_split(x, y, random_state=rand_seed)
@@ -135,7 +135,14 @@ def randomforestclassifier(x,y,rand_seed,v_n_estimators):
      model_f1=round(f1_score(val_y, val_predictions)*100,2)
      return model_acc,model_f1 
 
-    
+def svg_writer(svg, center=True):
+     b64=base64.base64encode(svg.encode("utf-8")).decode("utf-8")
+     css_justify="center" if center else "left"
+     css=f'<p style="text-align:centre;display:flex; justify-contect: {css_justify};">'
+     html=f'{css}<imag src="data:image/svg+xml; base64,{b64}"/>'
+     st.write(html, unsafe_allow_html=True)
+
+
 def add_parameter_ui(classifier_name):
     if classifier_name == 'Decision Tree':
         st.header("Model 1 (DecisionTreeClassifier)")
@@ -148,9 +155,10 @@ def add_parameter_ui(classifier_name):
                                       ['Sourness','Fruitiness','Sweetness'])
         x=wine.filter(features,axis=1)
         y=wine['Quality']
-        model1_acc, train_x,train_y,winemodel=decisiontreeclassifier(x,y,rand_seed,v_depth)
-        st.subheader("Model's Accuracy is "+ f"{model1_acc}")
-        return model1_acc
+        train_x,train_y, model_acc, model_acc=decisiontreeclassifier(x,y,rand_seed,v_depth)
+        st.subheader("Model's Accuracy is "+ f"{model_acc}")
+       # svg=viz.svg()
+        #svg_writer(svg) 
     
     elif classifier_name == 'Random Forest':
          st.header("Model 2: Random Forest")
