@@ -162,6 +162,14 @@ with st.container():
             class_names = ['Goon de Dorm', 'FS Cuvee'])
     
     f=viz.view()
+
+    def render_svg(svg):
+    """Renders the given svg string."""
+    b64 = base64.b64encode(svg.encode('utf-8')).decode("utf-8")
+    html = r'<img src="data:image/svg+xml;base64,%s"/>' % b64
+    st.write(html, unsafe_allow_html=True)
+
+    render_svg(f)
     
     def st_dtree(plot, height=None):
         dtree_html = f"<body>{viz.svg()}</body>"
